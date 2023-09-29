@@ -2,6 +2,23 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
+class Project(models.Model):
+    name = models.CharField(max_length=63, unique=True)
+    description = models.TextField(max_length=255)
+    image = models.ImageField(upload_to="photo/%Y/%m/%d", blank=True)
+
+    def __str__(self) -> str:
+        return f"{self.name}"
+
+
+class Team(models.Model):
+    name = models.CharField(max_length=63, unique=True)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="teams")
+
+    def __str__(self) -> str:
+        return f"{self.name}, working on {self.project}"
+
+
 class Position(models.Model):
     name = models.CharField(max_length=63, unique=True)
 
@@ -10,7 +27,9 @@ class Position(models.Model):
 
 
 class Worker(AbstractUser):
-    position = models.ForeignKey(Position, on_delete=models.CASCADE, related_name="workers")
+    position = models.ForeignKey(Position, on_delete=models.CASCADE, related_name="workers", null=True)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="workers", null=True)
+    image = models.ImageField(upload_to="photo/%Y/%m/%d", blank=True)
 
     def __str__(self) -> str:
         return f"{self.username} ({self.first_name} {self.last_name})"
@@ -18,6 +37,9 @@ class Worker(AbstractUser):
 
 class TaskType(models.Model):
     name = models.CharField(max_length=63, unique=True)
+
+    def __str__(self) -> str:
+        return f"{self.name}"
 
 
 class Task(models.Model):
@@ -45,14 +67,7 @@ class Task(models.Model):
     )
     task_type = models.ForeignKey(TaskType, on_delete=models.CASCADE, related_name="tasks")
     assignees = models.ManyToManyField(Worker, related_name="tasks")
+    team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="tasks")
 
-
-class Project(models.Model):
-    name = models.CharField(max_length=63, unique=True)
-    description = models.TextField(max_length=255)
-
-
-class Team(models.Model):
-    name = models.CharField(max_length=63, unique=True)
-    workers = models.ManyToManyField(Worker, related_name="teams")
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="teams")
+    def __str__(self) -> str:
+        return f"{self.name}"
