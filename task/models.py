@@ -71,3 +71,9 @@ class Task(models.Model):
 
     def __str__(self) -> str:
         return f"{self.name}"
+
+
+class TaskPoint(models.Model):
+    name = models.CharField(max_length=63)
+    is_done = models.BooleanField(default=False)
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="task_points")

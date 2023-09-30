@@ -23,7 +23,26 @@ class TaskForm(forms.ModelForm):
         model = Task
         fields = ["name", "description", "deadline", "priority", "task_type", "assignees", "team"]
         widgets = {
+            "name": forms.TextInput(
+                attrs={"class": "form-control",
+                       "placeholder": " Enter task name"}
+            ),
+            "description": forms.Textarea(
+                attrs={"class": "form-control",
+                       "placeholder": "Enter task description"}
+            ),
             "deadline": forms.DateTimeInput(
-                attrs={"type": "datetime-local"}
-            )}
+                attrs={"type": "datetime-local",
+                       "class": "form-control"}
+            ),
+            "priority": forms.Select(
+                attrs={"class": "form-control"}
+            ),
+            "task_type": forms.Select(
+                attrs={"class": "form-control"}
+            ),
+            "assignees": forms.SelectMultiple(
+                attrs={"class": "form-control"}
+            ),
+        }
 

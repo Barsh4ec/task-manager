@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.views import generic
 
-from .models import Project, Team, Task, Worker
+from .models import Project, Team, Task, Worker, TaskPoint
 from .forms import TaskForm
 
 
@@ -17,25 +17,34 @@ def index(request):
     return render(request, "index.html", context=context)
 
 
-def task_view(request, project_pk, team_pk):
+def team_view(request, project_pk, team_pk):
     teams = Team.objects.filter(project_id=project_pk)
     workers = Worker.objects.filter(team_id=team_pk)
     tasks = Task.objects.filter(team_id=team_pk)
+    team = Team.objects.get(id=team_pk)
     context = {
+        "team": team,
         "project_id": project_pk,
         "teams": teams,
         "team_id": team_pk,
         "workers": workers,
         "tasks": tasks
     }
-    return render(request, "dashboard.html", context=context)
+    return render(request, "teams_list.html", context=context)
 
 
 def task_create_view(request, project_pk, team_pk):
+
     if request.method == "GET":
+        teams = Team.objects.filter(project_id=project_pk)
         form = TaskForm(team_pk=team_pk)
-        context = {"form": form}
-        return render(request, "settings.html", context=context)
+        context = {
+            "form": form,
+            "teams": teams,
+            "project_id": project_pk,
+            "team_id": team_pk
+        }
+        return render(request, "task_create.html", context=context)
 
     if request.method == "POST":
         form = TaskForm(request.POST)
@@ -62,3 +71,19 @@ def task_create_view(request, project_pk, team_pk):
                 "team_pk": team_pk
             }
         ))
+
+
+def task_view(request, project_pk, team_pk):
+    workers = Worker.objects.filter(team_id=team_pk)
+    teams = Team.objects.filter(project_id=project_pk)
+    tasks = Task.objects.filter(team_id=team_pk)
+    team = Team.objects.get(id=team_pk)
+    context = {
+        "team": team,
+        "project_id": project_pk,
+        "teams": teams,
+        "team_id": team_pk,
+        "workers": workers,
+        "tasks": tasks,
+    }
+    return render(request, "task_list.html", context=context)

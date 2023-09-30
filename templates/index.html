@@ -67,7 +67,7 @@
         </div>
         <ul class="navbar-nav navbar-nav-hover align-items-lg-center">
           <li class="nav-item me-2">
-            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="teams_list.html" class="nav-link">Dashboard</a>
           </li>
           <li class="nav-item me-2">
             <a href="/page-sign-in.html" class="nav-link">Login</a>
@@ -128,7 +128,7 @@
       {% for project in projects %}
       <div class="row mb-5">
         <div class="col-6 mb-5">
-          <a href="{% url "task:task-list" project_pk=project.id team_pk=project.teams.first.id %}" class="page-preview scale-up-2">
+          <a href="{% url "task:team-list" project_pk=project.id team_pk=project.teams.first.id %}" class="page-preview scale-up-2">
             <img class="shadow-lg rounded scale" src="{{ project.image.url }}"
                  alt="Dashboard page preview">
             <div class="text-center show-on-hover rounded-bottom">
