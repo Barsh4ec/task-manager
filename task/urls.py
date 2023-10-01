@@ -1,6 +1,14 @@
 from django.urls import path
 
-from .views import index, team_view, task_create_view, task_view, task_point_view, create_task_point_view
+from .views import (
+    index,
+    team_view,
+    task_create_view,
+    task_view,
+    task_point_view,
+    create_task_point_view,
+    delete_task_point_view
+)
 
 urlpatterns = [
     path("", index, name="index"),
@@ -17,6 +25,11 @@ urlpatterns = [
         create_task_point_view,
         name="create-task-point"
     ),
+    path(
+        "project/<int:project_pk>/team/<int:team_pk>/delete-task-point/<int:pk>/",
+        delete_task_point_view,
+        name="delete-task-point"
+    )
 
 ]
 

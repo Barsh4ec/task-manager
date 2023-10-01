@@ -112,3 +112,9 @@ def create_task_point_view(request, project_pk, team_pk, pk):
             task_point.task = task
             task_point.save()
     return redirect("task:task-list", project_pk=project_pk, team_pk=team_pk)
+
+
+def delete_task_point_view(request, project_pk, team_pk, pk):
+    point_to_delete = TaskPoint.objects.get(id=pk)
+    point_to_delete.delete()
+    return redirect("task:task-list", project_pk=project_pk, team_pk=team_pk)
