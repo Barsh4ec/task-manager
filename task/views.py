@@ -1,10 +1,10 @@
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import generic
 
 from .models import Project, Team, Task, Worker, TaskPoint
-from .forms import TaskForm
+from .forms import TaskForm, TaskPointForm
 
 
 def index(request):
@@ -74,11 +74,13 @@ def task_create_view(request, project_pk, team_pk):
 
 
 def task_view(request, project_pk, team_pk):
+    form = TaskPointForm()
     workers = Worker.objects.filter(team_id=team_pk)
     teams = Team.objects.filter(project_id=project_pk)
     tasks = Task.objects.filter(team_id=team_pk)
     team = Team.objects.get(id=team_pk)
     context = {
+        "form": form,
         "team": team,
         "project_id": project_pk,
         "teams": teams,
@@ -87,3 +89,26 @@ def task_view(request, project_pk, team_pk):
         "tasks": tasks,
     }
     return render(request, "task_list.html", context=context)
+
+
+def task_point_view(request, project_pk, team_pk, pk):
+    task_point = TaskPoint.objects.get(id=pk)
+    if task_point.is_done:
+        task_point.is_done = False
+        task_point.save()
+    else:
+        task_point.is_done = True
+        task_point.save()
+    return redirect("task:task-list", project_pk=project_pk, team_pk=team_pk)
+
+
+def create_task_point_view(request, project_pk, team_pk, pk):
+    task = Task.objects.get(id=pk)
+
+    if request.method == 'POST':
+        form = TaskPointForm(request.POST)
+        if form.is_valid():
+            task_point = form.save(commit=False)
+            task_point.task = task
+            task_point.save()
+    return redirect("task:task-list", project_pk=project_pk, team_pk=team_pk)

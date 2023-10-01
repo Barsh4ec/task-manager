@@ -163,3 +163,4 @@ cython_debug/
 *.iml
 .DS_Store
 **__pycache__/
+media/

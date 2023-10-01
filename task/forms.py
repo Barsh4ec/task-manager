@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth import get_user_model
 
-from task.models import Task, Team
+from task.models import Task, Team, TaskPoint
 
 
 class DateTimeInput(forms.DateTimeInput):
@@ -46,3 +46,13 @@ class TaskForm(forms.ModelForm):
             ),
         }
 
+
+class TaskPointForm(forms.ModelForm):
+    class Meta:
+        model = TaskPoint
+        fields = ["name"]
+        widgets = {
+            "name": forms.TextInput(
+                attrs={"class": "form-control",
+                       "placeholder": " Enter task point name"}
+            )}
