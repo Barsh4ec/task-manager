@@ -7,28 +7,9 @@
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
 
+
 {% block content %}
-
-  <div class="py-4">
-    <div class="button">
-      <a href="{% url "task:task-create" project_pk=project_id team_pk=team_id %}"
-         class="btn btn-gray-800 d-inline-flex align-items-center me-2 dropdown-toggle"
-         aria-haspopup="true" aria-expanded="false">
-        <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-             xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-        </svg>
-        New Task
-      </a>
-
-    </div>
-  </div>
-  <div class="row">
-
-
-
-
-  <div class="row">
+  <div class="row mt-4">
     <div class="col-12 col-xl-8">
       <div class="row">
         <div class="col-12 col-xxl-6 mb-4">
@@ -105,17 +86,20 @@
                       </div>
                       {% if task.task_points|get_completed_point >= 80 %}
                         <div class="progress mb-0">
-                          <div class="progress-bar bg-success" role="progressbar" aria-valuenow="{{ task.task_points|get_completed_point }}" aria-valuemin="0"
+                          <div class="progress-bar bg-success" role="progressbar"
+                               aria-valuenow="{{ task.task_points|get_completed_point }}" aria-valuemin="0"
                                aria-valuemax="100" style="width: {{ task.task_points|get_completed_point }}%;"></div>
                         </div>
                       {% elif task.task_points|get_completed_point >= 40 %}
                         <div class="progress mb-0">
-                          <div class="progress-bar bg-warning" role="progressbar" aria-valuenow="{{ task.task_points|get_completed_point }}" aria-valuemin="0"
+                          <div class="progress-bar bg-warning" role="progressbar"
+                               aria-valuenow="{{ task.task_points|get_completed_point }}" aria-valuemin="0"
                                aria-valuemax="100" style="width: {{ task.task_points|get_completed_point }}%;"></div>
                         </div>
                       {% elif task.task_points|get_completed_point < 40 %}
                         <div class="progress mb-0">
-                          <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="{{ task.task_points|get_completed_point }}" aria-valuemin="0"
+                          <div class="progress-bar bg-danger" role="progressbar"
+                               aria-valuenow="{{ task.task_points|get_completed_point }}" aria-valuemin="0"
                                aria-valuemax="100" style="width: {{ task.task_points|get_completed_point }}%;"></div>
                         </div>
                       {% endif %}
@@ -131,40 +115,12 @@
       </div>
     </div>
     <div class="col-12 col-xl-4">
-      <div class="col-12 px-0 mb-4">
-        <div class="card border-0 shadow">
-          <div class="card-header d-flex flex-row align-items-center flex-0 border-bottom">
-            <div class="d-block">
-              <div class="h6 fw-normal text-gray mb-2">Total orders</div>
-              <h2 class="h3 fw-extrabold">452</h2>
-              <div class="small mt-2">
-                <span class="fas fa-angle-up text-success"></span>
-                <span class="text-success fw-bold">18.2%</span>
-              </div>
-            </div>
-            <div class="d-block ms-auto">
-              <div class="d-flex align-items-center text-end mb-2">
-                <span class="dot rounded-circle bg-gray-800 me-2"></span>
-                <span class="fw-normal small">July</span>
-              </div>
-              <div class="d-flex align-items-center text-end">
-                <span class="dot rounded-circle bg-secondary me-2"></span>
-                <span class="fw-normal small">August</span>
-              </div>
-            </div>
-          </div>
-          <div class="card-body p-2">
-            <div class="ct-chart-ranking ct-golden-section ct-series-a"></div>
-          </div>
-        </div>
-      </div>
 
       <div class="col-12 px-0">
         <div class="card border-0 shadow">
           <div class="card-body">
-            <h2 class="fs-5 fw-bold mb-1">Acquisition</h2>
-            <p>Tells you where your visitors originated from, such as search engines, social networks or website
-              referrals.</p>
+            <h2 class="fs-5 fw-bold mb-1">Statistics</h2>
+            <p>{{ team.description }}</p>
             <div class="d-block">
               <div class="d-flex align-items-center me-5">
                 <div class="icon-shape icon-sm icon-shape-danger rounded me-3">
@@ -175,8 +131,8 @@
                   </svg>
                 </div>
                 <div class="d-block">
-                  <label class="mb-0">Bounce Rate</label>
-                  <h4 class="mb-0">33.50%</h4>
+                  <label class="mb-0">Workers</label>
+                  <h4 class="mb-0">{{ workers.count }}</h4>
                 </div>
               </div>
               <div class="d-flex align-items-center pt-3">
@@ -187,8 +143,8 @@
                   </svg>
                 </div>
                 <div class="d-block">
-                  <label class="mb-0">Sessions</label>
-                  <h4 class="mb-0">9,567</h4>
+                  <label class="mb-0">Tasks</label>
+                  <h4 class="mb-0">{{ tasks.count }}</h4>
                 </div>
               </div>
             </div>

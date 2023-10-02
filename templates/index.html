@@ -124,14 +124,17 @@
           <p class="lead px-lg-10">
             This service will provide you possibility to manage your projects, teams and their tasks easily
           </p>
-          <a href="#" class="btn btn-primary">Create new project</a>
+          <a href="{% url "task:project-create" %}" class="btn btn-primary">Create new project</a>
         </div>
       </div>
       <div class="row mb-5">
         {% for project in projects %}
           <div class="col-6 mb-5">
-            <a href="{% url "task:team-list" project_pk=project.id team_pk=project.teams.first.id %}"
-               class="page-preview scale-up-2">
+              <a {% if project.teams.count == 0 %} href="{% url "task:team-create" project_pk=project.id %}"
+            {% else %}
+              href="{% url "task:team-list" project_pk=project.id team_pk=project.teams.first.id %}"
+            {% endif %}
+                 class="page-preview scale-up-2">
               <img class="shadow-lg rounded scale" style="width:550px;height:300px;" src="{{ project.image.url }}"
                    alt="{{ project.name }}">
               <div class="text-center show-on-hover rounded-bottom">

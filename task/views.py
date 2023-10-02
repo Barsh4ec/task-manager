@@ -2,18 +2,17 @@ from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views import generic
 
 from .models import Project, Team, Task, Worker, TaskPoint
-from .forms import TaskForm, TaskPointForm, NewUserForm
+from .forms import TaskForm, TaskPointForm, NewUserForm, TeamForm, TaskSearchForm
 
 
 @login_required
 def index(request):
     projects = Project.objects.all()
     context = {
-        "segment": "index",
         "projects": projects
     }
 
@@ -25,13 +24,15 @@ def team_view(request, project_pk, team_pk):
     workers = Worker.objects.filter(team_id=team_pk)
     tasks = Task.objects.filter(team_id=team_pk)
     team = Team.objects.get(id=team_pk)
+    project = Project.objects.get(id=project_pk)
     context = {
         "team": team,
         "project_id": project_pk,
         "teams": teams,
         "team_id": team_pk,
         "workers": workers,
-        "tasks": tasks
+        "tasks": tasks,
+        "project": project
     }
     return render(request, "teams_list.html", context=context)
 
@@ -41,11 +42,13 @@ def task_create_view(request, project_pk, team_pk):
     if request.method == "GET":
         teams = Team.objects.filter(project_id=project_pk)
         form = TaskForm(team_pk=team_pk)
+        project = Project.objects.get(id=project_pk)
         context = {
             "form": form,
             "teams": teams,
             "project_id": project_pk,
-            "team_id": team_pk
+            "team_id": team_pk,
+            "project": project
         }
         return render(request, "task_create.html", context=context)
 
@@ -64,24 +67,31 @@ def task_create_view(request, project_pk, team_pk):
             task.assignees.set(form.cleaned_data.get("assignees"))
             return HttpResponseRedirect(reverse(
                 "task:task-list", kwargs={
-                    "project_pk": project_pk,
-                    "team_pk": team_pk
+                    "project_id": project_pk,
+                    "team_id": team_pk
                 }
             ))
         return HttpResponseRedirect(reverse(
             "task:task-list", kwargs={
-                "project_pk": project_pk,
-                "team_pk": team_pk
+                "project_id": project_pk,
+                "team_id": team_pk
             }
         ))
 
 
 def task_view(request, project_pk, team_pk):
     form = TaskPointForm()
+    search_form = TaskSearchForm(request.GET)
+    tasks = Task.objects.filter(team_id=team_pk)
+    if search_form.is_valid():
+        tasks = Task.objects.filter(
+            name__icontains=search_form.cleaned_data["search_input"],
+            team_id=team_pk
+        )
     workers = Worker.objects.filter(team_id=team_pk)
     teams = Team.objects.filter(project_id=project_pk)
-    tasks = Task.objects.filter(team_id=team_pk)
     team = Team.objects.get(id=team_pk)
+    project = Project.objects.get(id=project_pk)
     context = {
         "form": form,
         "team": team,
@@ -90,7 +100,10 @@ def task_view(request, project_pk, team_pk):
         "team_id": team_pk,
         "workers": workers,
         "tasks": tasks,
+        "project": project,
+        "search_form": search_form
     }
+
     return render(request, "task_list.html", context=context)
 
 
@@ -132,3 +145,30 @@ def register_view(request):
             return redirect("task:index")
     form = NewUserForm()
     return render(request=request, template_name="registration/register.html", context={"form": form})
+
+
+class ProjectCreationView(generic.CreateView):
+    model = Project
+    fields = "__all__"
+    success_url = reverse_lazy("task:index")
+
+
+def create_team_view(request, project_pk):
+    project = Project.objects.get(id=project_pk)
+
+    if request.method == "GET":
+        form = TeamForm()
+        context = {
+            "form": form,
+            "project_id": project_pk
+        }
+        return render(request, "team_create.html", context=context)
+
+    if request.method == 'POST':
+        form = TeamForm(request.POST)
+        if form.is_valid():
+            team = form.save(commit=False)
+            team.project = project
+            team.save()
+            return redirect("task:task-list", project_pk=project_pk, team_pk=team.id)
+    return redirect("task:index")

@@ -13,6 +13,7 @@ class Project(models.Model):
 
 class Team(models.Model):
     name = models.CharField(max_length=63, unique=True)
+    description = models.CharField(max_length=127)
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="teams")
 
     def __str__(self) -> str:

@@ -8,7 +8,9 @@ from .views import (
     task_point_view,
     create_task_point_view,
     delete_task_point_view,
-    register_view
+    register_view,
+    ProjectCreationView,
+    create_team_view
 )
 
 urlpatterns = [
@@ -31,8 +33,9 @@ urlpatterns = [
         delete_task_point_view,
         name="delete-task-point"
     ),
-    path("accounts/register/", register_view, name="register")
-
+    path("accounts/register/", register_view, name="register"),
+    path("project/create/", ProjectCreationView.as_view(), name="project-create"),
+    path("project/<int:project_pk>/team/create", create_team_view, name="team-create")
 ]
 
 app_name = "task"

@@ -71,3 +71,31 @@ class NewUserForm(UserCreationForm):
         if commit:
             user.save()
         return user
+
+
+class TeamForm(forms.ModelForm):
+    class Meta:
+        model = Team
+        fields = ["name", "description"]
+        widgets = {
+            "name": forms.TextInput(
+                attrs={"class": "form-control",
+                       "placeholder": " Enter team name"}
+            ),
+            "description": forms.Textarea(
+                attrs={"class": "form-control",
+                       "placeholder": " Enter team description"}
+            )}
+
+
+class TaskSearchForm(forms.Form):
+    search_input = forms.CharField(
+        max_length=255,
+        required=False,
+        label="",
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Search"
+            }
+        )
+    )

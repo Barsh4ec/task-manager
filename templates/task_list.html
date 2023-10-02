@@ -5,6 +5,10 @@
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
 
+{% block navbar %}
+  {% include "includes/navigation_with_search_field.html" %}
+{% endblock %}
+
 {% block content %}
   <style>
       .svg-icon {
@@ -23,7 +27,6 @@
           stroke-width: 1;
       }
   </style>
-
 
   <div class="py-4">
     <div class="button">
