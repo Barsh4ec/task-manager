@@ -1,12 +1,15 @@
+from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import generic
 
 from .models import Project, Team, Task, Worker, TaskPoint
-from .forms import TaskForm, TaskPointForm
+from .forms import TaskForm, TaskPointForm, NewUserForm
 
 
+@login_required
 def index(request):
     projects = Project.objects.all()
     context = {
@@ -118,3 +121,14 @@ def delete_task_point_view(request, project_pk, team_pk, pk):
     point_to_delete = TaskPoint.objects.get(id=pk)
     point_to_delete.delete()
     return redirect("task:task-list", project_pk=project_pk, team_pk=team_pk)
+
+
+def register_view(request):
+    if request.method == "POST":
+        form = NewUserForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect("task:index")
+    form = NewUserForm()
+    return render(request=request, template_name="registration/register.html", context={"form": form})

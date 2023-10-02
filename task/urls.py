@@ -7,7 +7,8 @@ from .views import (
     task_view,
     task_point_view,
     create_task_point_view,
-    delete_task_point_view
+    delete_task_point_view,
+    register_view
 )
 
 urlpatterns = [
@@ -29,7 +30,8 @@ urlpatterns = [
         "project/<int:project_pk>/team/<int:team_pk>/delete-task-point/<int:pk>/",
         delete_task_point_view,
         name="delete-task-point"
-    )
+    ),
+    path("accounts/register/", register_view, name="register")
 
 ]
 
