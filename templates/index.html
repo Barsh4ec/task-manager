@@ -128,7 +128,7 @@
         </div>
       </div>
       <div class="row mb-5">
-        {% for project in projects %}
+        {% for project in project_list %}
           <div class="col-6 mb-5">
               <a {% if project.teams.count == 0 %} href="{% url "task:team-create" project_pk=project.id %}"
             {% else %}

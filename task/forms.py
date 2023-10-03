@@ -13,7 +13,7 @@ class TaskForm(forms.ModelForm):
     team_pk = None
 
     def __init__(self, *args, **kwargs):
-        self.team_pk = kwargs.pop('team_pk', None)
+        self.team_pk = kwargs.pop('team_id', None)
         super(TaskForm, self).__init__(*args, **kwargs)
 
         if self.team_pk is not None:

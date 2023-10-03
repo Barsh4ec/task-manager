@@ -1,113 +1,110 @@
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.views import generic
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Project, Team, Task, Worker, TaskPoint
 from .forms import TaskForm, TaskPointForm, NewUserForm, TeamForm, TaskSearchForm
 
 
-@login_required
-def index(request):
-    projects = Project.objects.all()
-    context = {
-        "projects": projects
-    }
-
-    return render(request, "index.html", context=context)
+class ProjectListView(LoginRequiredMixin, generic.ListView):
+    model = Project
+    template_name = "index.html"
 
 
-def team_view(request, project_pk, team_pk):
-    teams = Team.objects.filter(project_id=project_pk)
-    workers = Worker.objects.filter(team_id=team_pk)
-    tasks = Task.objects.filter(team_id=team_pk)
-    team = Team.objects.get(id=team_pk)
+class TeamListView(LoginRequiredMixin, generic.ListView):
+    model = Team
+    template_name = "team_list.html"
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(TeamListView, self).get_context_data(**kwargs)
+        context["project_id"] = self.kwargs["project_pk"]
+        context["team_id"] = self.kwargs["team_pk"]
+        context["team"] = Team.objects.get(id=self.kwargs["team_pk"])
+        context["teams"] = Team.objects.filter(project_id=self.kwargs["project_pk"])
+        context["workers"] = Worker.objects.filter(team_id=self.kwargs["team_pk"])
+        context["tasks"] = Task.objects.filter(team_id=self.kwargs["team_pk"])
+        context["project"] = Project.objects.get(id=self.kwargs["project_pk"])
+        return context
+
+
+def create_team_view(request, project_pk):
     project = Project.objects.get(id=project_pk)
-    context = {
-        "team": team,
-        "project_id": project_pk,
-        "teams": teams,
-        "team_id": team_pk,
-        "workers": workers,
-        "tasks": tasks,
-        "project": project
-    }
-    return render(request, "teams_list.html", context=context)
-
-
-def task_create_view(request, project_pk, team_pk):
 
     if request.method == "GET":
-        teams = Team.objects.filter(project_id=project_pk)
-        form = TaskForm(team_pk=team_pk)
-        project = Project.objects.get(id=project_pk)
+        form = TeamForm()
         context = {
             "form": form,
-            "teams": teams,
-            "project_id": project_pk,
-            "team_id": team_pk,
-            "project": project
+            "project_id": project_pk
         }
-        return render(request, "task_create.html", context=context)
+        return render(request, "task/team_create.html", context=context)
 
-    if request.method == "POST":
-        form = TaskForm(request.POST)
-        print(form.data)
+    if request.method == 'POST':
+        form = TeamForm(request.POST)
         if form.is_valid():
-            task = Task.objects.create(
-                name=form.cleaned_data.get("name"),
-                description=form.cleaned_data.get("description"),
-                deadline=form.cleaned_data.get("deadline"),
-                priority=form.cleaned_data.get("priority"),
-                task_type=form.cleaned_data.get("task_type"),
-                team=form.cleaned_data.get("team")
-            )
-            task.assignees.set(form.cleaned_data.get("assignees"))
-            return HttpResponseRedirect(reverse(
-                "task:task-list", kwargs={
-                    "project_id": project_pk,
-                    "team_id": team_pk
-                }
-            ))
-        return HttpResponseRedirect(reverse(
-            "task:task-list", kwargs={
-                "project_id": project_pk,
-                "team_id": team_pk
-            }
-        ))
+            team = form.save(commit=False)
+            team.project = project
+            team.save()
+            return redirect("task:task-list", project_pk=project_pk, team_pk=team.id)
+    return redirect("task:index")
 
 
-def task_view(request, project_pk, team_pk):
-    form = TaskPointForm()
-    search_form = TaskSearchForm(request.GET)
-    tasks = Task.objects.filter(team_id=team_pk)
-    if search_form.is_valid():
-        tasks = Task.objects.filter(
-            name__icontains=search_form.cleaned_data["search_input"],
-            team_id=team_pk
+class TaskCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Task
+    form_class = TaskForm
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(TaskCreateView, self).get_context_data(**kwargs)
+        context["project_id"] = self.kwargs["project_pk"]
+        context["team_id"] = self.kwargs["team_pk"]
+        context["teams"] = Team.objects.filter(project_id=self.kwargs["project_pk"])
+        context["project"] = Project.objects.get(id=self.kwargs["project_pk"])
+        return context
+
+    def get_success_url(self):
+        return reverse("task:task-list", kwargs={
+                    "project_pk": self.kwargs["project_pk"],
+                    "team_pk": self.kwargs["team_pk"]
+                })
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["team_id"] = self.kwargs["team_pk"]
+        return kwargs
+
+
+class TaskListView(LoginRequiredMixin, generic.ListView):
+    model = Task
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(TaskListView, self).get_context_data(**kwargs)
+        context["project_id"] = self.kwargs["project_pk"]
+        context["team_id"] = self.kwargs["team_pk"]
+        context["team"] = Team.objects.get(id=self.kwargs["team_pk"])
+        context["teams"] = Team.objects.filter(project_id=self.kwargs["project_pk"])
+        context["workers"] = Worker.objects.filter(team_id=self.kwargs["team_pk"])
+        context["project"] = Project.objects.get(id=self.kwargs["project_pk"])
+        context["form"] = TaskPointForm()
+        name = self.request.GET.get("search_input", "")
+        context["search_form"] = TaskSearchForm(
+            initial={"search_input": name}
         )
-    workers = Worker.objects.filter(team_id=team_pk)
-    teams = Team.objects.filter(project_id=project_pk)
-    team = Team.objects.get(id=team_pk)
-    project = Project.objects.get(id=project_pk)
-    context = {
-        "form": form,
-        "team": team,
-        "project_id": project_pk,
-        "teams": teams,
-        "team_id": team_pk,
-        "workers": workers,
-        "tasks": tasks,
-        "project": project,
-        "search_form": search_form
-    }
+        return context
 
-    return render(request, "task_list.html", context=context)
+    def get_queryset(self):
+        search_form = TaskSearchForm(self.request.GET)
+        if search_form.is_valid():
+            return Task.objects.filter(
+                name__icontains=search_form.cleaned_data["search_input"],
+                team_id=self.kwargs["team_pk"]
+            )
+        return Task.objects.all()
 
 
-def task_point_view(request, project_pk, team_pk, pk):
+@login_required()
+def change_task_point_status(request, project_pk, team_pk, pk):
     task_point = TaskPoint.objects.get(id=pk)
     if task_point.is_done:
         task_point.is_done = False
@@ -118,6 +115,7 @@ def task_point_view(request, project_pk, team_pk, pk):
     return redirect("task:task-list", project_pk=project_pk, team_pk=team_pk)
 
 
+@login_required()
 def create_task_point_view(request, project_pk, team_pk, pk):
     task = Task.objects.get(id=pk)
 
@@ -130,6 +128,7 @@ def create_task_point_view(request, project_pk, team_pk, pk):
     return redirect("task:task-list", project_pk=project_pk, team_pk=team_pk)
 
 
+@login_required()
 def delete_task_point_view(request, project_pk, team_pk, pk):
     point_to_delete = TaskPoint.objects.get(id=pk)
     point_to_delete.delete()
@@ -147,28 +146,7 @@ def register_view(request):
     return render(request=request, template_name="registration/register.html", context={"form": form})
 
 
-class ProjectCreationView(generic.CreateView):
+class ProjectCreationView(LoginRequiredMixin, generic.CreateView):
     model = Project
     fields = "__all__"
     success_url = reverse_lazy("task:index")
-
-
-def create_team_view(request, project_pk):
-    project = Project.objects.get(id=project_pk)
-
-    if request.method == "GET":
-        form = TeamForm()
-        context = {
-            "form": form,
-            "project_id": project_pk
-        }
-        return render(request, "team_create.html", context=context)
-
-    if request.method == 'POST':
-        form = TeamForm(request.POST)
-        if form.is_valid():
-            team = form.save(commit=False)
-            team.project = project
-            team.save()
-            return redirect("task:task-list", project_pk=project_pk, team_pk=team.id)
-    return redirect("task:index")
