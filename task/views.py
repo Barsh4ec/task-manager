@@ -1,4 +1,4 @@
-from django.contrib.auth import login
+from django.contrib.auth import login, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
@@ -143,10 +143,52 @@ def register_view(request):
             login(request, user)
             return redirect("task:index")
     form = NewUserForm()
-    return render(request=request, template_name="registration/register.html", context={"form": form})
+    return render(
+        request=request,
+        template_name="registration/register.html",
+        context={"form": form}
+    )
 
 
 class ProjectCreationView(LoginRequiredMixin, generic.CreateView):
     model = Project
     fields = "__all__"
     success_url = reverse_lazy("task:index")
+
+
+@login_required
+def toggle_assign_to_task(request, project_pk, team_pk, task_pk):
+    worker = get_user_model().objects.get(id=request.user.id)
+    if Task.objects.get(id=task_pk) in worker.tasks.all():
+        worker.tasks.remove(task_pk)
+    else:
+        worker.tasks.add(task_pk)
+    return redirect("task:task-list", project_pk=project_pk, team_pk=team_pk)
+
+
+@login_required()
+def delete_task_view(request, project_pk, team_pk, task_pk):
+    task_to_delete = Task.objects.get(id=task_pk)
+    task_to_delete.delete()
+    return redirect("task:task-list", project_pk=project_pk, team_pk=team_pk)
+
+
+@login_required()
+def remove_worker_from_team_view(request, project_pk, team_pk):
+    worker = get_user_model().objects.get(id=request.user.id)
+    if worker.team:
+        for task in worker.tasks.all():
+            worker.tasks.remove(task.id)
+        worker.team = None
+        worker.save()
+    return redirect("task:team-list", project_pk=project_pk, team_pk=team_pk)
+
+
+@login_required()
+def assign_worker_to_team_view(request, project_pk, team_pk):
+    worker = get_user_model().objects.get(id=request.user.id)
+    if not worker.team:
+        team = Team.objects.get(id=team_pk)
+        worker.team = team
+        worker.save()
+    return redirect("task:team-list", project_pk=project_pk, team_pk=team_pk)

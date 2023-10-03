@@ -66,4 +66,3 @@ class TaskPointAdmin(admin.ModelAdmin):
     list_display = ("name", "is_done")
     search_fields = ("name",)
     list_filter = ("name",)
-
