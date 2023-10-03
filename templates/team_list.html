@@ -17,11 +17,13 @@
             <div class="card-header border-bottom d-flex align-items-center justify-content-between">
               <h2 class="fs-5 fw-bold mb-0">{{ team.name }} members</h2>
               {% if user in workers %}
-                <a href="{% url "task:worker-remove" project_pk=project_id team_pk=team_id %}" class="btn btn-sm btn-primary">
+                <a href="{% url "task:worker-remove" project_pk=project_id team_pk=team_id %}"
+                   class="btn btn-sm btn-primary">
                   Leave team
                 </a>
               {% else %}
-                <a href="{% url "task:worker-assign" project_pk=project_id team_pk=team_id %}" class="btn btn-sm btn-primary">
+                <a href="{% url "task:worker-assign" project_pk=project_id team_pk=team_id %}"
+                   class="btn btn-sm btn-primary">
                   Join team
                 </a>
               {% endif %}
@@ -49,13 +51,18 @@
                       </div>
                       <div class="col text-end">
                         <a href="#" class="btn btn-sm btn-secondary d-inline-flex align-items-center">
-                          <svg class="icon icon-xxs me-2" fill="currentColor" viewBox="0 0 20 20"
-                               xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd"
-                                  d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
-                                  clip-rule="evenodd"></path>
-                          </svg>
-                          Add task
+                          {% if worker.username == user.username %}
+                            Me
+                          {% else %}
+                            <svg class="icon icon-xxs me-2" fill="currentColor" viewBox="0 0 20 20"
+                                 xmlns="http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd"
+                                    d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                            Add task
+
+                          {% endif %}
                         </a>
                       </div>
                     </div>

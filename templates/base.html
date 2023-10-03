@@ -120,7 +120,7 @@
         </a>
       </li>
       {% for team in teams %}
-        <li class="nav-item {% if 'dashboard' in segment %} active {% endif %}">
+        <li class="nav-item {% if team.id == team_id %} active {% endif %}">
           <a href="{% url "task:team-list" project_pk=project_id team_pk=team.id %}" class="nav-link">
                   <span class="sidebar-icon">
                     <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
