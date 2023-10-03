@@ -45,6 +45,9 @@ class TaskForm(forms.ModelForm):
             "assignees": forms.SelectMultiple(
                 attrs={"class": "form-control"}
             ),
+            "team": forms.Select(
+                attrs={"class": "form-control"}
+            )
         }
 
 
@@ -64,7 +67,7 @@ class NewUserForm(UserCreationForm):
 
     class Meta:
         model = Worker
-        fields = ("username", "email", "password1", "password2")
+        fields = ("username", "email", "first_name", "last_name", "password1", "password2")
 
     def save(self, commit=True):
         user = super(NewUserForm, self).save(commit=False)
