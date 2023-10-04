@@ -2,11 +2,31 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 
-from task.models import Task, Team, TaskPoint, Worker
+from task.models import Task, Team, TaskPoint, Worker, Project
 
 
 class DateTimeInput(forms.DateTimeInput):
     input_type = "datetime"
+
+
+class ProjectForm(forms.ModelForm):
+    class Meta:
+        model = Project
+        fields = ["name", "description", "image"]
+        widgets = {
+            "name": forms.TextInput(
+                attrs={"class": "form-control",
+                       "placeholder": " Enter project name"}
+            ),
+            "description": forms.Textarea(
+                attrs={"class": "form-control",
+                       "placeholder": "Enter project description"}
+            ),
+            "image": forms.FileInput(
+                attrs={
+                    "class": "form-control"}
+            ),
+        }
 
 
 class TaskForm(forms.ModelForm):
@@ -67,7 +87,7 @@ class NewUserForm(UserCreationForm):
 
     class Meta:
         model = Worker
-        fields = ("username", "email", "first_name", "last_name", "password1", "password2")
+        fields = ("username", "email", "first_name", "last_name", "password1", "password2", "position")
 
     def save(self, commit=True):
         user = super(NewUserForm, self).save(commit=False)

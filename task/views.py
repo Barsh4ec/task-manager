@@ -6,7 +6,14 @@ from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Project, Team, Task, Worker, TaskPoint
-from .forms import TaskForm, TaskPointForm, NewUserForm, TeamForm, TaskSearchForm
+from .forms import (
+    TaskForm,
+    TaskPointForm,
+    NewUserForm,
+    TeamForm,
+    TaskSearchForm,
+    ProjectForm
+)
 
 
 class ProjectListView(LoginRequiredMixin, generic.ListView):
@@ -37,7 +44,9 @@ def create_team_view(request, project_pk):
         form = TeamForm()
         context = {
             "form": form,
-            "project_id": project_pk
+            "project_id": project_pk,
+            "teams": Team.objects.filter(project_id=project_pk),
+            "project": Project.objects.get(id=project_pk)
         }
         return render(request, "task/team_create.html", context=context)
 
@@ -152,7 +161,7 @@ def register_view(request):
 
 class ProjectCreationView(LoginRequiredMixin, generic.CreateView):
     model = Project
-    fields = "__all__"
+    form_class = ProjectForm
     success_url = reverse_lazy("task:index")
 
 
