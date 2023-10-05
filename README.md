@@ -10,14 +10,27 @@ Password: `5B3ytK8Av2tQKER`
 
 ## Installing
 
-Install `python3` and execute these commands:
+### For Windows
+
+Install `python` and execute these commands:
 ```shell
 git clone https://github.com/Barsh4ec/task-manager.git
 cd task-manager/
 python -m venv venv
-source venv/bin/activate
+venv\bin\activate
 pip install -r requirements.txt
 python manage.py runserver
+```
+
+### For Unix-like systems
+Install `python3` and execute these commands:
+```shell
+git clone https://github.com/Barsh4ec/task-manager.git
+cd task-manager/
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python3 manage.py runserver
 ```
 ## Features
 * You can create multiple projects
