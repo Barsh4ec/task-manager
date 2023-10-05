@@ -16,7 +16,7 @@ from .forms import (
 )
 
 
-class ProjectListView(LoginRequiredMixin, generic.ListView):
+class ProjectListView(generic.ListView):
     model = Project
     template_name = "index.html"
 
