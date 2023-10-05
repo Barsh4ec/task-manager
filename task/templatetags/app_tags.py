@@ -3,7 +3,7 @@ from django import template
 register = template.Library()
 
 
-@register.filter(name="get_completed_point")
+@register.filter(name="get_completed_point")    # calculating % of completed task points
 def get_completed_point(value):
     done = value.filter(is_done=True).count()
     all_points = value.count()

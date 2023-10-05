@@ -115,7 +115,7 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
 @login_required()
 def change_task_point_status(request, project_pk, team_pk, pk):
     task_point = TaskPoint.objects.get(id=pk)
-    if task_point.is_done:
+    if task_point.is_done:  # if task_point status == True, change it to False
         task_point.is_done = False
         task_point.save()
     else:
@@ -168,9 +168,9 @@ class ProjectCreationView(LoginRequiredMixin, generic.CreateView):
 @login_required
 def toggle_assign_to_task(request, project_pk, team_pk, task_pk):
     worker = get_user_model().objects.get(id=request.user.id)
-    if Task.objects.get(id=task_pk) in worker.tasks.all():
-        worker.tasks.remove(task_pk)
-    else:
+    if Task.objects.get(id=task_pk) in worker.tasks.all():  # if worker is already working on this task,
+        worker.tasks.remove(task_pk)                        # we remove him from task workers
+    else:                                                   # if else, add him
         worker.tasks.add(task_pk)
     return redirect("task:task-list", project_pk=project_pk, team_pk=team_pk)
 
