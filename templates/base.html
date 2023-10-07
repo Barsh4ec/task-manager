@@ -33,30 +33,9 @@
         content="Volt Pro is a Premium Bootstrap 5 Admin Dashboard featuring over 800 components, 10+ plugins and 20 example pages using Vanilla JS.">
   <meta name="keywords"
         content="bootstrap 5, bootstrap, bootstrap 5 admin dashboard, bootstrap 5 dashboard, bootstrap 5 charts, bootstrap 5 calendar, bootstrap 5 datepicker, bootstrap 5 tables, bootstrap 5 datatable, vanilla js datatable, themesberg, themesberg dashboard, themesberg admin dashboard"/>
-  <link rel="canonical" href="https://appseed.us/admin-dashboards/django-dashboard-volt">
 
-  <!-- Open Graph / Facebook -->
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://demo.themesberg.com/volt-pro">
-  <meta property="og:title" content="Volt - Free Bootstrap 5 Dashboard">
-  <meta property="og:description"
-        content="Volt Pro is a Premium Bootstrap 5 Admin Dashboard featuring over 800 components, 10+ plugins and 20 example pages using Vanilla JS.">
-  <meta property="og:image"
-        content="https://themesberg.s3.us-east-2.amazonaws.com/public/products/volt-pro-bootstrap-5-dashboard/volt-pro-preview.jpg">
-
-  <!-- Twitter -->
-  <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:url" content="https://demo.themesberg.com/volt-pro">
-  <meta property="twitter:title" content="Volt - Free Bootstrap 5 Dashboard">
-  <meta property="twitter:description"
-        content="Volt Pro is a Premium Bootstrap 5 Admin Dashboard featuring over 800 components, 10+ plugins and 20 example pages using Vanilla JS.">
-  <meta property="twitter:image"
-        content="https://themesberg.s3.us-east-2.amazonaws.com/public/products/volt-pro-bootstrap-5-dashboard/volt-pro-preview.jpg">
 
   <!-- Favicon -->
-  <link rel="apple-touch-icon" sizes="120x120" href="/static/assets/img/favicon/apple-touch-icon.png">
-  <link rel="manifest" href="/static/assets/img/favicon/site.webmanifest">
-  <link rel="mask-icon" href="/static/assets/img/favicon/safari-pinned-tab.svg" color="#ffffff">
   <meta name="msapplication-TileColor" content="#ffffff">
   <meta name="theme-color" content="#ffffff">
 
@@ -148,45 +127,7 @@
       <li role="separator" class="dropdown-divider mt-4 mb-3 border-gray-700"></li>
       <li class="nav-item">
 
-        {#        {% include "includes/modal_project_description.html" %}#}
-
-        <style>
-            .modal-backdrop {
-                display: none;
-            }
-        </style>
-
-        <a class="nav-link d-flex align-items-center" data-bs-toggle="modal"
-           data-bs-target="#modal-show{{ project_id }}">
-                  <span class="sidebar-icon">
-                    <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
-                         xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd"
-                                                                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
-                                                                  clip-rule="evenodd"></path></svg>
-                  </span>
-          <span class="sidebar-text">About project</span>
-        </a>
-
-        <!-- Modal -->
-        <div class="modal fade" id="modal-show{{ project_id }}" tabindex="-1" aria-labelledby="exampleModalLabel"
-             aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Project description</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                <div class="modal-body text-wrap">
-                  {{ project.description }}
-                </div>
-
-
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- endModal -->
+        {% include "includes/modal_project_description.html" %}
 
       </li>
     </ul>
