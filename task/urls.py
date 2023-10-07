@@ -24,7 +24,7 @@ urlpatterns = [
         TeamListView.as_view(),
         name="team-list"
     ),
-    path("project/<int:project_pk>/team/create", create_team_view, name="team-create"),
+    path("project/<int:project_pk>/team/create/", create_team_view, name="team-create"),
     path(
         "project/<int:project_pk>/team/<int:team_pk>/task/create/",
         TaskCreateView.as_view(),

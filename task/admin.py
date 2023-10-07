@@ -1,6 +1,14 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import Worker, Position, TaskType, Task, Project, Team, TaskPoint
+from .models import (
+    Worker,
+    Position,
+    TaskType,
+    Task,
+    Project,
+    Team,
+    TaskPoint
+)
 
 
 @admin.register(Worker)
