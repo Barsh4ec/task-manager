@@ -1,0 +1,32 @@
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal"
+        data-bs-target="#modal-team-leave{{ team.id }}">
+  Leave team
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="modal-team-leave{{ team.id }}" tabindex="-1" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Create task point</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <div class="modal-body">
+          Are you sure you want to leave this team?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <a href="{% url "task:worker-remove" project_pk=project_id team_pk=team_id %}"
+             class="btn btn-danger">Leave</a>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+<!-- endModal -->
