@@ -89,6 +89,11 @@ class NewUserForm(UserCreationForm):
         model = Worker
         fields = ("username", "email", "first_name", "last_name", "password1", "password2", "position")
 
+    def __init__(self, *args, **kwargs):
+        super(NewUserForm, self).__init__(*args, **kwargs)
+        for field_name in ('username', 'email', 'password1', 'password2'):
+            self.fields[field_name].help_text = ''
+
     def save(self, commit=True):
         user = super(NewUserForm, self).save(commit=False)
         if commit:
