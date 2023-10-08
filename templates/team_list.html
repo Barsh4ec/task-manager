@@ -19,10 +19,15 @@
               {% if user in workers %}
                 {% include "includes/modal_team_leave_confirm.html" %}
               {% else %}
-                <a href="{% url "task:worker-assign" project_pk=project_id team_pk=team_id %}"
-                   class="btn btn-sm btn-primary">
-                  Join team
-                </a>
+                {% if user.team is not None %}
+                  {% include "includes/modal_already_in_team_alert.html" %}
+                {% else %}
+                  <a href="{% url "task:worker-assign" project_pk=project_id team_pk=team_id %}"
+                     class="btn btn-sm btn-primary">
+                    Join team
+                  </a>
+                {% endif %}
+
               {% endif %}
             </div>
             <div class="card-body">
