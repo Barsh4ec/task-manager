@@ -31,6 +31,11 @@ urlpatterns = [
         name="task-create"
     ),
     path(
+        "project/<int:project_pk>/team/<int:team_pk>/task/create/<int:pk>/",
+        TaskCreateView.as_view(),
+        name="personal-task-create"
+    ),
+    path(
         "project/<int:project_pk>/team/<int:team_pk>/tasks/",
         TaskListView.as_view(),
         name="task-list"

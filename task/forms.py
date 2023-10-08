@@ -33,12 +33,16 @@ class TaskForm(forms.ModelForm):
     team_pk = None
 
     def __init__(self, *args, **kwargs):
-        self.team_pk = kwargs.pop('team_id', None)
+        self.team_pk = kwargs.pop("team_id", None)
+        self.worker_pk = kwargs.pop("worker_pk", None)
         super(TaskForm, self).__init__(*args, **kwargs)
 
-        if self.team_pk is not None:
+        if self.team_pk:
             self.fields["assignees"].queryset = get_user_model().objects.filter(team_id=self.team_pk)
             self.fields["team"].queryset = Team.objects.filter(id=self.team_pk)
+
+        if self.worker_pk:
+            self.fields["assignees"].initial = Worker.objects.get(id=self.worker_pk)
 
     class Meta:
         model = Task

@@ -81,6 +81,8 @@ class TaskCreateView(LoginRequiredMixin, generic.CreateView):
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs["team_id"] = self.kwargs["team_pk"]
+        if self.kwargs.get("pk"):
+            kwargs["worker_pk"] = self.kwargs["pk"]
         return kwargs
 
 
