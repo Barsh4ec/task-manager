@@ -28,23 +28,26 @@
       }
   </style>
 
-  <div class="py-4">
-    <div class="button">
-      <a href="{% url "task:task-create" project_pk=project_id team_pk=team_id %}"
-         class="btn btn-gray-800 d-inline-flex align-items-center me-2 dropdown-toggle"
-         aria-haspopup="true" aria-expanded="false">
-        <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-             xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-        </svg>
-        New Task
-      </a>
+  {% if user in workers %}
+    <div class="py-4">
+      <div class="button">
+        <a href="{% url "task:task-create" project_pk=project_id team_pk=team_id %}"
+           class="btn btn-gray-800 d-inline-flex align-items-center me-2 dropdown-toggle"
+           aria-haspopup="true" aria-expanded="false">
+          <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+               xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+          </svg>
+          New Task
+        </a>
 
+      </div>
     </div>
-  </div>
+  {% else %}
+    <br>
+  {% endif %}
+
   <div class="row">
-
-
     {% for task in task_list %}
       <div class="col-12 col-sm-6 col-xl-4 mb-4">
         <div class="card border-0 shadow">
