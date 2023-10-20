@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %} Create team {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-12 col-xl-3"></div>
+    <div class="col-12 col-xl-6">
+      <div class="card card-body border-0 shadow mb-4">
+        <h2 class="h5 mb-4">Information about team</h2>
+        <form action="{% url "task:team-create" project_pk=project_id %}" method="post">
+          {% csrf_token %}
+          <div class="col-lg-12 col-sm-6">
+            {{ tasks }}
+            {{ form.as_p }}
+          </div>
+
+
+          <div class="mt-3">
+            <button class="btn btn-gray-800 mt-2 animate-up-2" type="submit">Create team</button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+    <div class="col-12 col-xl-3">
+
+    </div>
+  </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

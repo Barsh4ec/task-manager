@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %} Tasks {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block navbar %}
+  {% include "includes/navigation_with_search_field.html" %}
+{% endblock %}
+
+{% block content %}
+  <style>
+      .svg-icon {
+          width: 1.5em;
+          height: 1.5em;
+      }
+
+      .svg-icon path,
+      .svg-icon polygon,
+      .svg-icon rect {
+          fill: #1f2937;
+      }
+
+      .svg-icon circle {
+          stroke: #1f2937;
+          stroke-width: 1;
+      }
+  </style>
+
+  {% if user in workers %}
+    <div class="py-4">
+      <div class="button">
+        <a href="{% url "task:task-create" project_pk=project_id team_pk=team_id %}"
+           class="btn btn-gray-800 d-inline-flex align-items-center me-2 dropdown-toggle"
+           aria-haspopup="true" aria-expanded="false">
+          <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+               xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+          </svg>
+          New Task
+        </a>
+
+      </div>
+    </div>
+  {% else %}
+    <br>
+  {% endif %}
+
+  <div class="row">
+    {% for task in task_list %}
+      <div class="col-12 col-sm-6 col-xl-4 mb-4">
+        <div class="card border-0 shadow">
+          <div class="card-body">
+            <div class="card-header border-bottom d-flex align-items-center justify-content-between">
+              <div class="h5 mb-0">{{ task.name }}</div>
+              <div class="fw-bold text-gray-500 ms-auto me-0">
+                {% if user in workers %}
+                  {% if user in task.assignees.all %}
+                    <a class="me-0"
+                       href="{% url "task:task-assign" project_pk=project_id team_pk=team_id task_pk=task.id %}">
+                      <svg class="svg-icon" viewBox="0 0 20 20">
+                        <path
+                            d="M14.776,10c0,0.239-0.195,0.434-0.435,0.434H5.658c-0.239,0-0.434-0.195-0.434-0.434s0.195-0.434,0.434-0.434h8.684C14.581,9.566,14.776,9.762,14.776,10 M18.25,10c0,4.558-3.693,8.25-8.25,8.25c-4.557,0-8.25-3.691-8.25-8.25c0-4.557,3.693-8.25,8.25-8.25C14.557,1.75,18.25,5.443,18.25,10 M17.382,10c0-4.071-3.312-7.381-7.382-7.381C5.929,2.619,2.619,5.93,2.619,10c0,4.07,3.311,7.382,7.381,7.382C14.07,17.383,17.382,14.07,17.382,10"></path>
+                      </svg>
+                    </a>
+                    {% include "includes/modal_task_delete.html" %}
+                  {% else %}
+                    <a class="me-0"
+                       href="{% url "task:task-assign" project_pk=project_id team_pk=team_id task_pk=task.id %}">
+                      <svg class="svg-icon" viewBox="0 0 20 20">
+                        <path
+                            d="M14.613,10c0,0.23-0.188,0.419-0.419,0.419H10.42v3.774c0,0.23-0.189,0.42-0.42,0.42s-0.419-0.189-0.419-0.42v-3.774H5.806c-0.23,0-0.419-0.189-0.419-0.419s0.189-0.419,0.419-0.419h3.775V5.806c0-0.23,0.189-0.419,0.419-0.419s0.42,0.189,0.42,0.419v3.775h3.774C14.425,9.581,14.613,9.77,14.613,10 M17.969,10c0,4.401-3.567,7.969-7.969,7.969c-4.402,0-7.969-3.567-7.969-7.969c0-4.402,3.567-7.969,7.969-7.969C14.401,2.031,17.969,5.598,17.969,10 M17.13,10c0-3.932-3.198-7.13-7.13-7.13S2.87,6.068,2.87,10c0,3.933,3.198,7.13,7.13,7.13S17.13,13.933,17.13,10"></path>
+                      </svg>
+                    </a>
+                    {% include "includes/modal_task_delete.html" %}
+                  {% endif %}
+                {% endif %}
+              </div>
+            </div>
+            <div class="card-header border-bottom d-flex align-items-center justify-content-between">
+              <h6 class="fw-normal mb-0">{{ task.description }}</h6>
+            </div>
+            <div class="card-body">
+
+              {% for task_point in task.task_points.all %}
+                <div class="row mb-4">
+                  <div class="col-auto">
+                    <svg class="icon icon-sm text-gray-500" fill="currentColor" viewBox="0 0 20 20"
+                         xmlns="http://www.w3.org/2000/svg">
+                      <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
+                      <path fill-rule="evenodd"
+                            d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                  </div>
+                  <div class="col">
+                    <div class="progress-wrapper">
+                      <div class="progress-info">
+                        <div class="h6 mb-0"><input type="checkbox" id="checkbox"
+                                                    {% if task_point.is_done %}checked{% endif %}
+                                                    disabled> {{ task_point.name }}</div>
+                        <div class="fw-bold text-gray-500 ms-auto me-2"><a
+                            href="{% url "task:mark-task-point" project_pk=project_id team_pk=team_id pk=task_point.id %}">
+                          {% if task_point.is_done %}
+                            <svg class="svg-icon" viewBox="0 0 20 20">
+                              <path
+                                  d="M10.185,1.417c-4.741,0-8.583,3.842-8.583,8.583c0,4.74,3.842,8.582,8.583,8.582S18.768,14.74,18.768,10C18.768,5.259,14.926,1.417,10.185,1.417 M10.185,17.68c-4.235,0-7.679-3.445-7.679-7.68c0-4.235,3.444-7.679,7.679-7.679S17.864,5.765,17.864,10C17.864,14.234,14.42,17.68,10.185,17.68 M10.824,10l2.842-2.844c0.178-0.176,0.178-0.46,0-0.637c-0.177-0.178-0.461-0.178-0.637,0l-2.844,2.841L7.341,6.52c-0.176-0.178-0.46-0.178-0.637,0c-0.178,0.176-0.178,0.461,0,0.637L9.546,10l-2.841,2.844c-0.178,0.176-0.178,0.461,0,0.637c0.178,0.178,0.459,0.178,0.637,0l2.844-2.841l2.844,2.841c0.178,0.178,0.459,0.178,0.637,0c0.178-0.176,0.178-0.461,0-0.637L10.824,10z"></path>
+                            </svg>
+                          {% else %}
+                            <svg class="svg-icon" viewBox="0 0 20 20">
+                              <path
+                                  d="M10.219,1.688c-4.471,0-8.094,3.623-8.094,8.094s3.623,8.094,8.094,8.094s8.094-3.623,8.094-8.094S14.689,1.688,10.219,1.688 M10.219,17.022c-3.994,0-7.242-3.247-7.242-7.241c0-3.994,3.248-7.242,7.242-7.242c3.994,0,7.241,3.248,7.241,7.242C17.46,13.775,14.213,17.022,10.219,17.022 M15.099,7.03c-0.167-0.167-0.438-0.167-0.604,0.002L9.062,12.48l-2.269-2.277c-0.166-0.167-0.437-0.167-0.603,0c-0.166,0.166-0.168,0.437-0.002,0.603l2.573,2.578c0.079,0.08,0.188,0.125,0.3,0.125s0.222-0.045,0.303-0.125l5.736-5.751C15.268,7.466,15.265,7.196,15.099,7.03"></path>
+                            </svg>
+                          {% endif %}</a>
+                        </div>
+
+                        {% include "includes/modal_task_point_delete.html" %}
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+
+              {% include "includes/modal_task_point_create.html" %}
+              <div class="border-top mt-3 d-flex align-items-center justify-content-between">
+                {% if task.assignees.all %}
+                  <h6 class="fw-normal mb-0 ms-0">Such people work on this task: {% for worker in task.assignees.all %}
+                    {{ worker.username }}, {% endfor %}</h6>
+                {% else %}
+                  <h6 class="fw-normal mb-0">Nobody is working on this task</h6>
+                {% endif %}
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+
+
+  </div>
+
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}
